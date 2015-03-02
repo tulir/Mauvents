@@ -1,0 +1,13 @@
+name: Mauvents
+author: Tulir293
+main: net.maunium.bukkit.Mauvents.Mauvents
+website: http://maunium.net
+version: 1.0
+commands:
+  mauventsadmin:
+    description: Admin command
+    aliases: [maueventsadmin, eventsadmin, maueventadmin, eventadmin, mauea, ea]
+permissions:
+  mauevents.admin:
+    description: Admin permission
+    default: OP
