@@ -6,21 +6,19 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class BracketsDeathListener implements Listener {
-	private Mauvents plugin;
 	private Brackets b;
 	
-	public BracketsDeathListener(Mauvents plugin, Brackets b) {
-		this.plugin = plugin;
+	public BracketsDeathListener(Brackets b) {
 		this.b = b;
 	}
 	
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent evt) {
-		
+		if (evt.getEntity().hasMetadata(b.OPPONENT)) b.matchend(evt.getEntity(), false);
 	}
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent evt) {
-		
+		if (evt.getPlayer().hasMetadata(b.OPPONENT)) b.matchend(evt.getPlayer(), true);
 	}
 }
