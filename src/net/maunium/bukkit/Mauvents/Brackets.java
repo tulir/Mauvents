@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import net.maunium.bukkit.MauBukLib.MauUtils;
 
 public class Brackets {
+	public final String IN_BRACKETS = "MauventsBracketsInBrackets", OPPONENT = "MauventsBracketsOpponent";
 	private Mauvents plugin;
 	private Location[] spawnpoints;
 	private List<UUID> players;
@@ -20,6 +21,8 @@ public class Brackets {
 	
 	public Brackets(Mauvents plugin) {
 		this.plugin = plugin;
+		
+		plugin.getServer().getPluginManager().registerEvents(new BracketsDeathListener(this), plugin);
 		
 		FileConfiguration conf = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "brackets.yml"));
 		List<String> tmp = conf.getStringList("spawn-points");
@@ -34,9 +37,10 @@ public class Brackets {
 		inGame = true;
 	}
 	
-	public void matchend(Player p, Player o, boolean quit) {
+	public void matchend(Player p, boolean quit) {
 		players.remove(p.getUniqueId());
 		p.teleport(p.getWorld().getSpawnLocation());
+		Player o = plugin.getServer().getPlayer((UUID) MauUtils.getMetadata(p, OPPONENT, plugin).value());
 		o.teleport(spawnpoints[players.indexOf(o)]);
 		broadcast(plugin.stag + plugin.translate("brackets.matchend." + (quit ? "quit" : "death"), p.getName(), o.getName()));
 		matchstart();
