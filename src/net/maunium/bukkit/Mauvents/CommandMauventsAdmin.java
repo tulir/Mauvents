@@ -14,7 +14,7 @@ public class CommandMauventsAdmin extends IngameCommandExecutor {
 	
 	@Override
 	public boolean onCommand(Player p, Command cmd, String label, String[] args) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 }
