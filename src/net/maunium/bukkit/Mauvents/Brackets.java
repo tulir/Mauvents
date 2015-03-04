@@ -30,11 +30,33 @@ public class Brackets {
 		players = new ArrayList<UUID>(spawnpoints.length);
 	}
 	
-	public void join(Player p){
+	public void start() {
+		inGame = true;
+	}
+	
+	public void matchend(Player p, Player o, boolean quit) {
+		players.remove(p.getUniqueId());
+		p.teleport(p.getWorld().getSpawnLocation());
+		o.teleport(spawnpoints[players.indexOf(o)]);
+		broadcast(plugin.stag + plugin.translate("brackets.matchend." + (quit ? "quit" : "death"), p.getName(), o.getName()));
+		matchstart();
+	}
+	
+	public void matchstart() {
 		
 	}
 	
-	public void leave(Player p){
+	public void join(Player p) {
 		
+	}
+	
+	public void leave(Player p) {
+		
+	}
+	
+	private void broadcast(String msg) {
+		for (UUID u : players) {
+			plugin.getServer().getPlayer(u).sendMessage(msg);
+		}
 	}
 }
