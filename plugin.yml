@@ -3,11 +3,24 @@ author: Tulir293
 main: net.maunium.bukkit.Mauvents.Mauvents
 website: http://maunium.net
 version: 1.0
+depend: [MauBukLib]
 commands:
   mauventsadmin:
-    description: Admin command
-    aliases: [maueventsadmin, eventsadmin, maueventadmin, eventadmin, mauea, ea]
+    description: Main command for admins
+    permission: mauvents.admin
+    permission-message: "§4[§cMauvents§4]§c You do not have <permission>"
+    usage: "§4[§cMauvents§4]§c Usage: /<command> PARAMS"
+    aliases: [eventsadmin, eventadmin, mauventadmin, maueventadmin, maueventsadmin]
+  mauvents:
+    description: Main command for players
+    permission: mauvents.play
+    permission-message: "§4[§cMauvents§4]§c You do not have <permission>"
+    usage: "§4[§cMauvents§4]§c Usage: /<command> <join/leave> [game]"
+    aliases: [events, event, mauvent, mauevent, mauevents]
 permissions:
-  mauevents.admin:
-    description: Admin permission
+  mauvents.admin:
+    description: Be an admin
     default: OP
+  mauvents.play:
+    description: Be a player
+    default: true
