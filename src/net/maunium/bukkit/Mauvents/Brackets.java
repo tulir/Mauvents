@@ -50,11 +50,23 @@ public class Brackets {
 	
 	public void matchend(Player p, boolean quit) {
 		players.remove(p.getUniqueId());
-		p.teleport(p.getWorld().getSpawnLocation());
 		Player o = plugin.getServer().getPlayer((UUID) MauUtils.getMetadata(p, OPPONENT, plugin).value());
+		
+		p.teleport(p.getWorld().getSpawnLocation());
 		o.teleport(spawnpoints[players.indexOf(o)]);
+		
+		int round = MauUtils.getMetadata(o, ROUND, plugin).asInt() + 1;
+		o.setMetadata(ROUND, new FixedMetadataValue(plugin, round));
+		o.removeMetadata(OPPONENT, plugin);
+		p.removeMetadata(IN_BRACKETS, plugin);
+		p.removeMetadata(OPPONENT, plugin);
+		p.removeMetadata(ROUND, plugin);
+		
 		broadcast(plugin.stag + plugin.translate("brackets.matchend." + (quit ? "quit" : "death"), p.getName(), o.getName()));
-		matchstart();
+		
+		if (players.size() < 2) {
+			// TODO: End match
+		} else matchstart();
 	}
 	
 	public void matchstart() {
@@ -90,17 +102,25 @@ public class Brackets {
 		return rtrn;
 	}
 	
-	public void join(Player p) {
-		
+	public boolean join(Player p) {
+		if (!inGame) {
+			
+			return true;
+		} else return false;
 	}
 	
 	public void leave(Player p) {
-		
+		if (p.hasMetadata(IN_BRACKETS)) {
+			if (p.hasMetadata(OPPONENT) && inGame) {
+				matchend(p, true);
+			} else {
+				// TODO: Leave before match starts.
+			}
+		}
 	}
 	
 	private void broadcast(String msg) {
-		for (UUID u : players) {
+		for (UUID u : players)
 			plugin.getServer().getPlayer(u).sendMessage(msg);
-		}
 	}
 }
