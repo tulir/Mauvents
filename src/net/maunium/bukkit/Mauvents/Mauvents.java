@@ -6,8 +6,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Mauvents extends JavaPlugin {
 	
 	public String version;
-	public final String name = "Mauvents", author = "Tulir293", stag = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + name + ChatColor.DARK_GREEN + "] " + ChatColor.GRAY,
-			errtag = ChatColor.DARK_RED + "[" + ChatColor.RED + name + ChatColor.DARK_RED + "] " + ChatColor.RED;
+	public final String name = "Mauvents", author = "Tulir293", stag = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + name + ChatColor.DARK_GREEN + "] "
+			+ ChatColor.GRAY, errtag = ChatColor.DARK_RED + "[" + ChatColor.RED + name + ChatColor.DARK_RED + "] " + ChatColor.RED;
+	private Brackets b;
 	
 	@Override
 	public void onEnable() {
@@ -17,6 +18,8 @@ public class Mauvents extends JavaPlugin {
 		
 		this.getCommand("mauvents").setExecutor(new CommandMauvents(this));
 		this.getCommand("mauventsadmin").setExecutor(new CommandMauventsAdmin(this));
+		this.b = new Brackets(this);
+		
 		int et = (int) (System.currentTimeMillis() - st);
 		getLogger().info(name + " v" + version + " by " + author + " enabled in " + et + "ms.");
 	}
@@ -29,5 +32,14 @@ public class Mauvents extends JavaPlugin {
 		
 		int et = (int) (System.currentTimeMillis() - st);
 		getLogger().info(name + " v" + version + " by " + author + " disabled in " + et + "ms.");
+	}
+	
+	public Brackets getBrackets(){
+		return b;
+	}
+	
+	public String translate(String node, Object... arguments){
+		
+		return node;
 	}
 }
