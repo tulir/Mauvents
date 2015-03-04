@@ -16,7 +16,7 @@ public class Mauvents extends JavaPlugin {
 		// this.saveDefaultConfig();
 		
 		this.getCommand("mauvents").setExecutor(new CommandMauvents(this));
-		this.getCommand("mauvents").setExecutor(new CommandMauventsAdmin(this));
+		this.getCommand("mauventsadmin").setExecutor(new CommandMauventsAdmin(this));
 		int et = (int) (System.currentTimeMillis() - st);
 		getLogger().info(name + " v" + version + " by " + author + " enabled in " + et + "ms.");
 	}
