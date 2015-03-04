@@ -9,7 +9,7 @@ commands:
     description: Main command for admins
     permission: mauvents.admin
     permission-message: "§4[§cMauvents§4]§c You do not have <permission>"
-    usage: "§4[§cMauvents§4]§c Usage: /<command> PARAMS"
+    usage: "§4[§cMauvents§4]§c Usage: /<command> <host/setspawn> <game> [spawntype]"
     aliases: [eventsadmin, eventadmin, mauventadmin, maueventadmin, maueventsadmin]
   mauvents:
     description: Main command for players
