@@ -14,7 +14,14 @@ public class CommandMauventsAdmin extends IngameCommandExecutor {
 	
 	@Override
 	public boolean onCommand(Player p, Command cmd, String label, String[] args) {
-		
+		if(args.length > 1){
+			if(args[0].equalsIgnoreCase("brackets")){
+				if(args[0].equalsIgnoreCase("start")){
+					if(plugin.getBrackets().hasStarted()) p.sendMessage(plugin.errtag + plugin.translate("brackets.alreadyingame"));
+					else plugin.getBrackets().start();
+				}
+			}
+		}
 		return false;
 	}
 }

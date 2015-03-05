@@ -3,6 +3,8 @@ package net.maunium.bukkit.Mauvents;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.maunium.bukkit.Mauvents.Brackets.Brackets;
+
 public class Mauvents extends JavaPlugin {
 	
 	public String version;
