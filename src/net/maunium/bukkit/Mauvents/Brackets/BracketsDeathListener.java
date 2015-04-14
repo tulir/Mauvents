@@ -14,7 +14,7 @@ public class BracketsDeathListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent evt) {
-		if (evt.getEntity().hasMetadata(host.OPPONENT)) host.matchend(evt.getEntity(), false);
+		if (evt.getEntity().hasMetadata(Brackets.OPPONENT)) host.matchend(evt.getEntity(), false);
 	}
 	
 	@EventHandler

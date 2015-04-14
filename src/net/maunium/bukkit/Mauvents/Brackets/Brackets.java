@@ -10,13 +10,13 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 
-import net.maunium.bukkit.MauBukLib.MauUtils;
+import net.maunium.bukkit.Maussentials.Utils.MetadataUtils;
+import net.maunium.bukkit.Maussentials.Utils.SerializableLocation;
 import net.maunium.bukkit.Mauvents.Mauvents;
 
 public class Brackets {
-	public final String IN_BRACKETS = "MauventsBracketsInBrackets", OPPONENT = "MauventsBracketsOpponent", ROUND = "MauventsBracketsOnRound",
+	public static final String IN_BRACKETS = "MauventsBracketsInBrackets", OPPONENT = "MauventsBracketsOpponent", ROUND = "MauventsBracketsOnRound",
 			STARTING = "MauventsBracketsMatchStarting";
 	private Mauvents plugin;
 	private Location[] spawnpoints;
@@ -42,8 +42,8 @@ public class Brackets {
 		if (players.size() < 2) return;
 		for (UUID u : players) {
 			Player p = plugin.getServer().getPlayer(u);
-			p.setMetadata(IN_BRACKETS, new FixedMetadataValue(plugin, true));
-			p.setMetadata(ROUND, new FixedMetadataValue(plugin, 1));
+			MetadataUtils.setFixedMetadata(p, IN_BRACKETS, true, plugin);
+			MetadataUtils.setFixedMetadata(p, ROUND, 1, plugin);
 		}
 		matchstart();
 	}
@@ -61,22 +61,22 @@ public class Brackets {
 	
 	public void matchend(Player p, boolean quit) {
 		players.remove(p.getUniqueId());
-		Player o = plugin.getServer().getPlayer((UUID) MauUtils.getMetadata(p, OPPONENT, plugin).value());
+		Player o = plugin.getServer().getPlayer((UUID) MetadataUtils.getMetadata(p, OPPONENT, plugin).value());
 		
 		p.teleport(p.getWorld().getSpawnLocation());
 		o.teleport(spawnpoints[players.indexOf(o.getUniqueId())]);
 		
-		int round = MauUtils.getMetadata(o, ROUND, plugin).asInt() + 1;
-		o.setMetadata(ROUND, new FixedMetadataValue(plugin, round));
-		o.removeMetadata(OPPONENT, plugin);
-		o.removeMetadata(STARTING, plugin);
-		p.removeMetadata(IN_BRACKETS, plugin);
-		p.removeMetadata(OPPONENT, plugin);
-		p.removeMetadata(ROUND, plugin);
-		p.removeMetadata(STARTING, plugin);
+		int round = MetadataUtils.getMetadata(o, ROUND, plugin).asInt() + 1;
+		MetadataUtils.setFixedMetadata(o, ROUND, round, plugin);
+		MetadataUtils.removeMetadata(o, ROUND, plugin);
+		MetadataUtils.removeMetadata(o, STARTING, plugin);
+		MetadataUtils.removeMetadata(p, IN_BRACKETS, plugin);
+		MetadataUtils.removeMetadata(p, OPPONENT, plugin);
+		MetadataUtils.removeMetadata(p, ROUND, plugin);
+		MetadataUtils.removeMetadata(p, STARTING, plugin);
 		p.teleport(plugin.getServer().getWorlds().get(0).getSpawnLocation());
 		
-		broadcast(plugin.stag + plugin.translate("brackets.matchend." + (quit ? "quit" : "death"), p.getName(), o.getName()));
+		broadcast(plugin.translateStd("brackets.matchend." + (quit ? "quit" : "death"), p.getName(), o.getName()));
 		
 		if (players.size() < 2) end();
 		else matchstart();
@@ -90,7 +90,7 @@ public class Brackets {
 		List<UUID> l = getPlayersOnRound(currentRound);
 		if (l.size() == 0) {
 			currentRound++;
-			broadcast(plugin.stag + plugin.translate("brackets.nextround", currentRound));
+			broadcast(plugin.translateStd("brackets.nextround", currentRound));
 			matchstart();
 			return;
 		}
@@ -107,10 +107,10 @@ public class Brackets {
 		Player po = plugin.getServer().getPlayer(o);
 		
 		if (pc.isOnline() && po.isOnline()) {
-			pc.setMetadata(OPPONENT, new FixedMetadataValue(plugin, po.getUniqueId()));
-			po.setMetadata(OPPONENT, new FixedMetadataValue(plugin, pc.getUniqueId()));
-			pc.setMetadata(STARTING, new FixedMetadataValue(plugin, true));
-			po.setMetadata(STARTING, new FixedMetadataValue(plugin, true));
+			MetadataUtils.setFixedMetadata(pc, OPPONENT, po.getUniqueId(), plugin);
+			MetadataUtils.setFixedMetadata(po, OPPONENT, pc.getUniqueId(), plugin);
+			MetadataUtils.setFixedMetadata(pc, STARTING, true, plugin);
+			MetadataUtils.setFixedMetadata(po, STARTING, true, plugin);
 			
 			pc.teleport(p1);
 			po.teleport(p2);
@@ -126,46 +126,46 @@ public class Brackets {
 			@Override
 			public void run() {
 				if (!pc.isOnline() || !po.isOnline()) return;
-				broadcast(plugin.translate("brackets.match.startingin", 4));
+				broadcast(plugin.translatePlain("brackets.match.startingin", 4));
 			}
 		}, 20);
 		plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
 			public void run() {
 				if (!pc.isOnline() || !po.isOnline()) return;
-				broadcast(plugin.translate("brackets.match.startingin", 3));
+				broadcast(plugin.translatePlain("brackets.match.startingin", 3));
 			}
 		}, 40);
 		plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
 			public void run() {
 				if (!pc.isOnline() || !po.isOnline()) return;
-				broadcast(plugin.translate("brackets.match.startingin", 2));
+				broadcast(plugin.translatePlain("brackets.match.startingin", 2));
 			}
 		}, 60);
 		plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
 			public void run() {
 				if (!pc.isOnline() || !po.isOnline()) return;
-				broadcast(plugin.translate("brackets.match.startingin", 1));
+				broadcast(plugin.translatePlain("brackets.match.startingin", 1));
 			}
 		}, 80);
 		plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
 			public void run() {
 				if (!pc.isOnline() || !po.isOnline()) return;
-				broadcast(plugin.translate("brackets.match.startingnow"));
-				pc.removeMetadata(STARTING, plugin);
-				po.removeMetadata(STARTING, plugin);
+				broadcast(plugin.translatePlain("brackets.match.startingnow"));
+				MetadataUtils.removeMetadata(pc, STARTING, plugin);
+				MetadataUtils.removeMetadata(po, STARTING, plugin);
 			}
 		}, 100);
-		broadcast(plugin.stag + plugin.translate("brackets.match", pc.getName(), po.getName()));
+		broadcast(plugin.translateStd("brackets.match", pc.getName(), po.getName()));
 	}
 	
 	public List<UUID> getPlayersOnRound(int round) {
 		List<UUID> rtrn = new ArrayList<UUID>();
 		for (UUID u : players) {
-			int i = MauUtils.getMetadata(plugin.getServer().getPlayer(u), ROUND, plugin).asInt();
+			int i = MetadataUtils.getMetadata(plugin.getServer().getPlayer(u), ROUND, plugin).asInt();
 			if (i == round) rtrn.add(u);
 		}
 		return rtrn;
@@ -209,10 +209,10 @@ public class Brackets {
 			List<String> tmp = conf.getStringList("spawn.waiting");
 			
 			for (int i = 0; i < tmp.size(); i++)
-				spawnpoints[i] = MauUtils.parseLocation(tmp.get(i));
+				spawnpoints[i] = SerializableLocation.fromString(tmp.get(i)).toLocation();
 			
-			p1 = MauUtils.parseLocation(conf.getString("spawn.p1"));
-			p2 = MauUtils.parseLocation(conf.getString("spawn.p2"));
+			p1 = SerializableLocation.fromString(conf.getString("spawn.p1")).toLocation();
+			p2 = SerializableLocation.fromString(conf.getString("spawn.p2")).toLocation();
 		}
 		
 		players = new PlayerList(spawnpoints.length);

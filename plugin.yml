@@ -2,14 +2,14 @@ name: Mauvents
 author: Tulir293
 main: net.maunium.bukkit.Mauvents.Mauvents
 website: http://maunium.net
-version: 1.0
-depend: [MauBukLib]
+version: 0.1
+depend: [Maussentials]
 commands:
   mauvents:
     description: Main command for admins
     permission: mauvents.admin
     permission-message: "§4[§cMauvents§4]§c You do not have <permission>"
-    usage: "§4[§cMauvents§4]§c Usage: /<command> <host/setspawn> <game> [spawntype]"
+    usage: "§4[§cMauvents§4]§c Usage: /<command> <game> <start/setspawn> [spawn type]"
     aliases: [eventsadmin, eventadmin, mauventadmin, maueventadmin, maueventsadmin]
   maubrackets:
     description: Join/leave brackets
@@ -17,6 +17,11 @@ commands:
     permission-message: "§4[§cMauvents§4]§c You do not have <permission>"
     usage: "§4[§cMauvents§4]§c Usage: /<command> [join/leave]"
     aliases: [brackets]
+  maulastmanstanding:
+    description: Join/leave LMS.
+    permission: mauvents.play.lms
+    usage: "§4[§cMauvents§4]§c Usage: /<command> [join/leave]"
+    aliases: [lastmanstanding, maulms, lms]
 permissions:
   mauvents.admin:
     description: Be an admin

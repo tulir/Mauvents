@@ -4,25 +4,25 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.maunium.bukkit.Mauvents.Brackets.Brackets;
+import net.maunium.bukkit.Mauvents.LMS.LMS;
 
 public class Mauvents extends JavaPlugin {
-	
-	public String version;
-	public final String name = "Mauvents", author = "Tulir293", stag = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + name + ChatColor.DARK_GREEN + "] "
-			+ ChatColor.GRAY, errtag = ChatColor.DARK_RED + "[" + ChatColor.RED + name + ChatColor.DARK_RED + "] " + ChatColor.RED;
+	private final String stag = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "Mauvents" + ChatColor.DARK_GREEN + "] " + ChatColor.GRAY,
+			errtag = ChatColor.DARK_RED + "[" + ChatColor.RED + "Mauvents" + ChatColor.DARK_RED + "] " + ChatColor.RED;
 	private Brackets b;
+	private LMS l;
 	
 	@Override
 	public void onEnable() {
 		long st = System.currentTimeMillis();
-		version = getDescription().getVersion();
-		// this.saveDefaultConfig();
+		saveDefaultConfig();
 		
 		getCommand("mauvents").setExecutor(new CommandMauventsAdmin(this));
 		b = new Brackets(this);
+		l = new LMS(this);
 		
 		int et = (int) (System.currentTimeMillis() - st);
-		getLogger().info(name + " v" + version + " by " + author + " enabled in " + et + "ms.");
+		getLogger().info("Mauvents v" + getDescription().getVersion() + " by Tulir293 enabled in " + et + "ms.");
 	}
 	
 	@Override
@@ -30,17 +30,32 @@ public class Mauvents extends JavaPlugin {
 		long st = System.currentTimeMillis();
 		
 		// TODO: Disable code
+		saveConfig();
 		
 		int et = (int) (System.currentTimeMillis() - st);
-		getLogger().info(name + " v" + version + " by " + author + " disabled in " + et + "ms.");
+		getLogger().info("Mauvents v" + getDescription().getVersion() + " by Tulir293 disabled in " + et + "ms.");
 	}
 	
 	public Brackets getBrackets() {
 		return b;
 	}
 	
-	public String translate(String node, Object... arguments) {
+	public LMS getLMS() {
+		return l;
+	}
+	
+	public String translateStd(String node, Object... arguments) {
 		
-		return node;
+		return stag + /* TODO: Translate node */node;
+	}
+	
+	public String translateErr(String node, Object... arguments) {
+		
+		return errtag + /* TODO: Translate node */node;
+	}
+	
+	public String translatePlain(String node, Object... arguments) {
+		
+		return /* TODO: Translate node */node;
 	}
 }
