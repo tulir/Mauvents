@@ -23,6 +23,7 @@ public class CommandMauventsAdmin implements IngameCommandExecutor {
 				} else if (args[1].equalsIgnoreCase("setspawn") && args.length > 2) {
 					p.sendMessage(plugin.translateErr("brackets.nyi.setspawn"));
 				} else return false;
+				return true;
 			} else if (args[0].equalsIgnoreCase("lms")) {
 				if (args[1].equalsIgnoreCase("start")) {
 					if (plugin.getLMS().hasStarted()) p.sendMessage(plugin.translateErr("lms.alreadystarted"));
@@ -40,8 +41,8 @@ public class CommandMauventsAdmin implements IngameCommandExecutor {
 						p.sendMessage(plugin.translateStd("lms.set.lobby", new SerializableLocation(p.getLocation()).toReadableString()));
 					} else p.sendMessage(plugin.translateErr("lms.set.notfound", args[2]));
 				} else return false;
-			}
-		}
-		return false;
+				return true;
+			} else return false;
+		} else return false;
 	}
 }
