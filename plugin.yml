@@ -5,22 +5,22 @@ website: http://maunium.net
 version: 1.0
 depend: [MauBukLib]
 commands:
-  mauventsadmin:
+  mauvents:
     description: Main command for admins
     permission: mauvents.admin
     permission-message: "§4[§cMauvents§4]§c You do not have <permission>"
     usage: "§4[§cMauvents§4]§c Usage: /<command> <host/setspawn> <game> [spawntype]"
     aliases: [eventsadmin, eventadmin, mauventadmin, maueventadmin, maueventsadmin]
-  mauvents:
-    description: Main command for players
-    permission: mauvents.play
+  maubrackets:
+    description: Join/leave brackets
+    permission: mauvents.play.brackets
     permission-message: "§4[§cMauvents§4]§c You do not have <permission>"
-    usage: "§4[§cMauvents§4]§c Usage: /<command> <join/leave> [game]"
-    aliases: [events, event, mauvent, mauevent, mauevents]
+    usage: "§4[§cMauvents§4]§c Usage: /<command> [join/leave]"
+    aliases: [brackets]
 permissions:
   mauvents.admin:
     description: Be an admin
     default: OP
-  mauvents.play:
-    description: Be a player
+  mauvents.play.brackets:
+    description: Play brackets
     default: true

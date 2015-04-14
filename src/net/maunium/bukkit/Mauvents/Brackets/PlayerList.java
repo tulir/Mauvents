@@ -8,7 +8,7 @@ public class PlayerList implements Iterable<UUID> {
 	private UUID[] players;
 	
 	public PlayerList(int length) {
-		this.players = new UUID[length];
+		players = new UUID[length];
 	}
 	
 	public boolean remove(UUID u) {
@@ -30,6 +30,7 @@ public class PlayerList implements Iterable<UUID> {
 	}
 	
 	public boolean isEmpty() {
+		if (arrayLength() == 0) return true;
 		for (UUID u : players)
 			if (u != null) return false;
 		return true;
@@ -42,7 +43,18 @@ public class PlayerList implements Iterable<UUID> {
 		return true;
 	}
 	
+	public boolean contains(UUID u) {
+		return indexOf(u) != -1;
+	}
+	
 	public int size() {
+		int size = 0;
+		for (int i = 0; i < players.length; i++)
+			if (players[i] != null) size++;
+		return size;
+	}
+	
+	public int arrayLength() {
 		return players.length;
 	}
 	

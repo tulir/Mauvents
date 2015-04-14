@@ -15,12 +15,11 @@ public class Mauvents extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		long st = System.currentTimeMillis();
-		version = this.getDescription().getVersion();
+		version = getDescription().getVersion();
 		// this.saveDefaultConfig();
 		
-		this.getCommand("mauvents").setExecutor(new CommandMauvents(this));
-		this.getCommand("mauventsadmin").setExecutor(new CommandMauventsAdmin(this));
-		this.b = new Brackets(this);
+		getCommand("mauvents").setExecutor(new CommandMauventsAdmin(this));
+		b = new Brackets(this);
 		
 		int et = (int) (System.currentTimeMillis() - st);
 		getLogger().info(name + " v" + version + " by " + author + " enabled in " + et + "ms.");
@@ -36,11 +35,11 @@ public class Mauvents extends JavaPlugin {
 		getLogger().info(name + " v" + version + " by " + author + " disabled in " + et + "ms.");
 	}
 	
-	public Brackets getBrackets(){
+	public Brackets getBrackets() {
 		return b;
 	}
 	
-	public String translate(String node, Object... arguments){
+	public String translate(String node, Object... arguments) {
 		
 		return node;
 	}
