@@ -1,4 +1,4 @@
-package net.maunium.bukkit.Mauvents.LMS;
+package net.maunium.bukkit.Mauvents;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +16,6 @@ import net.maunium.bukkit.Maussentials.Utils.IngameCommandExecutor;
 import net.maunium.bukkit.Maussentials.Utils.MetadataUtils;
 import net.maunium.bukkit.Maussentials.Utils.SerializableLocation;
 import net.maunium.bukkit.Maussentials.Utils.DelayedActions.DelayedTeleport;
-import net.maunium.bukkit.Mauvents.Mauvents;
 
 public class LMS implements Listener, IngameCommandExecutor {
 	public static final String IN_LMS = "MauventsLMSInEvent";

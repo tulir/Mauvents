@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.maunium.bukkit.Mauvents.Brackets.Brackets;
-import net.maunium.bukkit.Mauvents.LMS.LMS;
 
 public class Mauvents extends JavaPlugin {
 	private final String stag = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "Mauvents" + ChatColor.DARK_GREEN + "] " + ChatColor.GRAY,
