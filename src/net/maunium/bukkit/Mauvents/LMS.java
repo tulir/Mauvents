@@ -120,8 +120,10 @@ public class LMS implements Listener, IngameCommandExecutor {
 	public void onPreCommand(PlayerCommandPreprocessEvent evt) {
 		if (evt.getPlayer().hasMetadata(IN_LMS)) {
 			if (!evt.getMessage().startsWith("lms") && !evt.getMessage().startsWith("maulms") && !evt.getMessage().startsWith("maulastmanstanding")
-					&& !evt.getMessage().startsWith("lastmanstanding")) evt.setCancelled(true);
-			
+					&& !evt.getMessage().startsWith("lastmanstanding")) {
+				evt.setCancelled(true);
+				evt.getPlayer().sendMessage(plugin.translateErr("lms.commandinmatch"));
+			}
 		}
 	}
 	

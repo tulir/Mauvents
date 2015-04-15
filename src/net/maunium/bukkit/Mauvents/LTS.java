@@ -201,8 +201,10 @@ public class LTS implements Listener, IngameCommandExecutor {
 	public void onPreCommand(PlayerCommandPreprocessEvent evt) {
 		if (evt.getPlayer().hasMetadata(IN_LTS)) {
 			if (!evt.getMessage().startsWith("lts") && !evt.getMessage().startsWith("maults") && !evt.getMessage().startsWith("maulastteamstanding")
-					&& !evt.getMessage().startsWith("lastteamstanding")) evt.setCancelled(true);
-			
+					&& !evt.getMessage().startsWith("lastteamstanding")) {
+				evt.setCancelled(true);
+				evt.getPlayer().sendMessage(plugin.translateErr("lts.commandinmatch"));
+			}
 		}
 	}
 	

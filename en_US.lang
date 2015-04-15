@@ -24,6 +24,7 @@ lts.set.team1=&b[LTS]&7 Set spawn point for team 1 to &6{0}&7.
 lts.set.team2=&b[LTS]&7 Set spawn point for team 2 to &6{0}&7.
 lts.set.lobby=&b[LTS]&7 Set lobby point to &6{0}&7.
 lts.set.notfound=&b[LTS]&c No such spawn point. Available points: team1, team2, lobby.
+lts.commandinmatch=&b[LTS]&c You can only use /lts while in the match.
 
 lms.win=&b[LMS]&3 &6{0}&3 won the match!
 lms.win.null=&b[LMS]&3 Well, that's awkward. No-one won the match!
@@ -40,3 +41,4 @@ lms.started=&b[LMS]&7 Started LMS match
 lms.set.arena=&b[LMS]&7 Set spawn point for team 1 to &6{0}&7.
 lms.set.lobby=&b[LMS]&7 Set lobby point to &6{0}&7.
 lms.set.notfound=&b[LMS]&c No such spawn point. Available points: arena, lobby.
+lms.commandinmatch=&b[LMS]&c You can only use /lms while in the match.
