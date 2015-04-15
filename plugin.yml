@@ -22,10 +22,21 @@ commands:
     permission: mauvents.play.lms
     usage: "§4[§cMauvents§4]§c Usage: /<command> [join/leave]"
     aliases: [lastmanstanding, maulms, lms]
+  maulastteamstanding:
+    description: Join/leave LTS.
+    permission: mauvents.play.lts
+    usage: "§4[§cMauvents§4]§c Usage: /<command> [join/leave]"
+    aliases: [lastteamstanding, maults, lts]
 permissions:
   mauvents.admin:
     description: Be an admin
     default: OP
   mauvents.play.brackets:
     description: Play brackets
+    default: true
+  mauvents.play.lms:
+    description: Play LMS
+    default: true
+  mauvents.play.lts:
+    description: Play LTS
     default: true

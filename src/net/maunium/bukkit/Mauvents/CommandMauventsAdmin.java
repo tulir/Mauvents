@@ -28,6 +28,7 @@ public class CommandMauventsAdmin implements IngameCommandExecutor {
 				if (args[1].equalsIgnoreCase("start")) {
 					if (plugin.getLMS().hasStarted()) p.sendMessage(plugin.translateErr("lms.alreadystarted"));
 					else if (!plugin.getLMS().enoughPlayers()) p.sendMessage(plugin.translateErr("lms.toolittleplayers"));
+					else if (!plugin.getLMS().isSetUp()) p.sendMessage(plugin.translateErr("lms.notsetup"));
 					else {
 						plugin.getLMS().start();
 						p.sendMessage(plugin.translateStd("lms.started"));
@@ -38,6 +39,29 @@ public class CommandMauventsAdmin implements IngameCommandExecutor {
 						p.sendMessage(plugin.translateStd("lms.set.arena", new SerializableLocation(p.getLocation()).toReadableString()));
 					} else if (args[2].equalsIgnoreCase("lobby")) {
 						plugin.getLMS().setLobby(p.getLocation());
+						p.sendMessage(plugin.translateStd("lms.set.lobby", new SerializableLocation(p.getLocation()).toReadableString()));
+					} else p.sendMessage(plugin.translateErr("lms.set.notfound", args[2]));
+				} else return false;
+				return true;
+			} else if (args[0].equalsIgnoreCase("lts")) {
+				if (args[1].equalsIgnoreCase("start")) {
+					if (plugin.getLTS().hasStarted()) p.sendMessage(plugin.translateErr("lts.alreadystarted"));
+					else if (!plugin.getLTS().enoughPlayers()) p.sendMessage(plugin.translateErr("lts.toolittleplayers"));
+					else if (!plugin.getLTS().isSetUp()) p.sendMessage(plugin.translateErr("lts.notsetup"));
+					else {
+						plugin.getLTS().start();
+						p.sendMessage(plugin.translateStd("lts.started"));
+					}
+				} else if (args[1].equalsIgnoreCase("setspawn") && args.length > 2) {
+					if (args[2].equalsIgnoreCase("team1")) {
+						plugin.getLTS().setTeam1(p.getLocation());
+						p.sendMessage(plugin.translateStd("lms.set.team1", new SerializableLocation(p.getLocation()).toReadableString()));
+					}
+					if (args[2].equalsIgnoreCase("team2")) {
+						plugin.getLTS().setTeam2(p.getLocation());
+						p.sendMessage(plugin.translateStd("lms.set.team2", new SerializableLocation(p.getLocation()).toReadableString()));
+					} else if (args[2].equalsIgnoreCase("lobby")) {
+						plugin.getLTS().setLobby(p.getLocation());
 						p.sendMessage(plugin.translateStd("lms.set.lobby", new SerializableLocation(p.getLocation()).toReadableString()));
 					} else p.sendMessage(plugin.translateErr("lms.set.notfound", args[2]));
 				} else return false;

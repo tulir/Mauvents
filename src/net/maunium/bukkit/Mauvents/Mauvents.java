@@ -9,7 +9,8 @@ public class Mauvents extends JavaPlugin {
 	private final String stag = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "Mauvents" + ChatColor.DARK_GREEN + "] " + ChatColor.GRAY,
 			errtag = ChatColor.DARK_RED + "[" + ChatColor.RED + "Mauvents" + ChatColor.DARK_RED + "] " + ChatColor.RED;
 	private Brackets b;
-	private LMS l;
+	private LMS lms;
+	private LTS lts;
 	
 	@Override
 	public void onEnable() {
@@ -18,7 +19,8 @@ public class Mauvents extends JavaPlugin {
 		
 		getCommand("mauvents").setExecutor(new CommandMauventsAdmin(this));
 		b = new Brackets(this);
-		l = new LMS(this);
+		lms = new LMS(this);
+		lts = new LTS(this);
 		
 		int et = (int) (System.currentTimeMillis() - st);
 		getLogger().info("Mauvents v" + getDescription().getVersion() + " by Tulir293 enabled in " + et + "ms.");
@@ -40,7 +42,11 @@ public class Mauvents extends JavaPlugin {
 	}
 	
 	public LMS getLMS() {
-		return l;
+		return lms;
+	}
+	
+	public LTS getLTS() {
+		return lts;
 	}
 	
 	public String translateStd(String node, Object... arguments) {

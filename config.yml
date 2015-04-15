@@ -2,3 +2,8 @@ lms:
   arena: 0.0, 0.0, 0.0, 0.0, 0.0, world
   lobby: 0.0, 0.0, 0.0, 0.0, 0.0, world
   min-players: 5
+lms:
+  team1: 0.0, 0.0, 0.0, 0.0, 0.0, world
+  team2: 0.0, 0.0, 0.0, 0.0, 0.0, world
+  lobby: 0.0, 0.0, 0.0, 0.0, 0.0, world
+  min-players: 6

@@ -34,6 +34,18 @@ public class LMS implements Listener, IngameCommandExecutor {
 		minPlayers = plugin.getConfig().getInt("lms.minplayers", 5);
 	}
 	
+	public boolean hasStarted() {
+		return started;
+	}
+	
+	public boolean enoughPlayers() {
+		return players.size() >= minPlayers;
+	}
+	
+	public boolean isSetUp() {
+		return arena != null && lobby != null && minPlayers > 1;
+	}
+	
 	public void setArena(Location l) {
 		arena = l;
 		plugin.getConfig().set("lms.arena", new SerializableLocation(l).toString());
@@ -47,18 +59,10 @@ public class LMS implements Listener, IngameCommandExecutor {
 	public void start() {
 		for (UUID u : players) {
 			Player p = plugin.getServer().getPlayer(u);
-			if (p != null) p.teleport(arena);
+			if (p != null && p.isOnline()) p.teleport(arena);
 			else players.remove(u);
 		}
 		started = true;
-	}
-	
-	public boolean hasStarted() {
-		return started;
-	}
-	
-	public boolean enoughPlayers() {
-		return players.size() >= minPlayers;
 	}
 	
 	public void end() {
@@ -113,7 +117,27 @@ public class LMS implements Listener, IngameCommandExecutor {
 	
 	@Override
 	public boolean onCommand(Player sender, Command command, String label, String[] args) {
-		
+		if (args.length == 0) {
+			if (!players.contains(sender.getUniqueId())) {
+				if (join(sender)) sender.sendMessage(plugin.translateStd("lms.join"));
+				else sender.sendMessage(plugin.translateErr("lms.alreadystarted"));
+			} else {
+				if (leave(sender, false)) sender.sendMessage(plugin.translateStd("lms.leave"));
+				else sender.sendMessage(plugin.translateErr("lms.notin"));
+			}
+		} else {
+			if (args[0].equalsIgnoreCase("join")) {
+				if (!players.contains(sender.getUniqueId())) {
+					if (join(sender)) sender.sendMessage(plugin.translateStd("lms.join"));
+					else sender.sendMessage(plugin.translateErr("lms.alreadystarted"));
+				} else sender.sendMessage(plugin.translateErr("lms.alreadyin"));
+			} else if (args[0].equalsIgnoreCase("leave")) {
+				if (players.contains(sender.getUniqueId())) {
+					if (leave(sender, false)) sender.sendMessage(plugin.translateStd("lms.leave"));
+					else sender.sendMessage(plugin.translateErr("lms.notin"));
+				} else sender.sendMessage(plugin.translateErr("lms.notin"));
+			}
+		}
 		return true;
 	}
 }
