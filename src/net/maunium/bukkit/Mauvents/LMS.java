@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import net.maunium.bukkit.Maussentials.Utils.IngameCommandExecutor;
@@ -112,6 +113,15 @@ public class LMS implements Listener, IngameCommandExecutor {
 	public void onPlayerDeath(PlayerDeathEvent evt) {
 		if (evt.getEntity().hasMetadata(IN_LMS) || players.contains(evt.getEntity().getUniqueId())) {
 			leave(evt.getEntity(), true);
+		}
+	}
+	
+	@EventHandler
+	public void onPreCommand(PlayerCommandPreprocessEvent evt) {
+		if (evt.getPlayer().hasMetadata(IN_LMS)) {
+			if (!evt.getMessage().startsWith("lms") && !evt.getMessage().startsWith("maulms") && !evt.getMessage().startsWith("maulastmanstanding")
+					&& !evt.getMessage().startsWith("lastmanstanding")) evt.setCancelled(true);
+			
 		}
 	}
 	

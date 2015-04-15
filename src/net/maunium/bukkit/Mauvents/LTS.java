@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -193,6 +194,15 @@ public class LTS implements Listener, IngameCommandExecutor {
 		if (evt.getEntity().hasMetadata(IN_LTS) || players.contains(evt.getEntity().getUniqueId())) {
 			// TODO: Respawning if uneven teams at start
 			leave(evt.getEntity(), true);
+		}
+	}
+	
+	@EventHandler
+	public void onPreCommand(PlayerCommandPreprocessEvent evt) {
+		if (evt.getPlayer().hasMetadata(IN_LTS)) {
+			if (!evt.getMessage().startsWith("lts") && !evt.getMessage().startsWith("maults") && !evt.getMessage().startsWith("maulastteamstanding")
+					&& !evt.getMessage().startsWith("lastteamstanding")) evt.setCancelled(true);
+			
 		}
 	}
 	
