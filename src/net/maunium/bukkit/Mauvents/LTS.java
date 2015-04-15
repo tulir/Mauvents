@@ -24,7 +24,7 @@ import net.maunium.bukkit.Maussentials.Utils.DelayedActions.DelayedTeleport;
 public class LTS implements Listener, IngameCommandExecutor {
 	public static final String IN_LTS = "MauventsLTSInEvent";
 	private Mauvents plugin;
-	private Location lobby, team1, team2;
+	private Location lobby = null, team1 = null, team2 = null;
 	private int minPlayers = 6;
 	private Set<UUID> players = new HashSet<UUID>();
 	private boolean respawnGreen = false, respawnRed = false, started = false;
@@ -36,9 +36,9 @@ public class LTS implements Listener, IngameCommandExecutor {
 		sbm = plugin.getServer().getScoreboardManager();
 		this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
 		this.plugin.getCommand("maulastteamstanding").setExecutor(this);
-		lobby = SerializableLocation.fromString(plugin.getConfig().getString("lts.lobby")).toLocation();
-		team1 = SerializableLocation.fromString(plugin.getConfig().getString("lts.team1")).toLocation();
-		team2 = SerializableLocation.fromString(plugin.getConfig().getString("lts.team2")).toLocation();
+		if (plugin.getConfig().contains("lts.lobby")) lobby = SerializableLocation.fromString(plugin.getConfig().getString("lts.lobby")).toLocation();
+		if (plugin.getConfig().contains("lts.team1")) team1 = SerializableLocation.fromString(plugin.getConfig().getString("lts.team1")).toLocation();
+		if (plugin.getConfig().contains("lts.team2")) team2 = SerializableLocation.fromString(plugin.getConfig().getString("lts.team2")).toLocation();
 		minPlayers = plugin.getConfig().getInt("lts.minplayers", 5);
 		
 		Scoreboard board = sbm.getMainScoreboard();

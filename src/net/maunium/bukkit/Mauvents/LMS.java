@@ -20,7 +20,7 @@ import net.maunium.bukkit.Maussentials.Utils.DelayedActions.DelayedTeleport;
 public class LMS implements Listener, IngameCommandExecutor {
 	public static final String IN_LMS = "MauventsLMSInEvent";
 	private Mauvents plugin;
-	private Location arena, lobby;
+	private Location arena = null, lobby = null;
 	private int minPlayers = 5;
 	private Set<UUID> players = new HashSet<UUID>();
 	private boolean started = false;
@@ -29,8 +29,8 @@ public class LMS implements Listener, IngameCommandExecutor {
 		this.plugin = plugin;
 		this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
 		this.plugin.getCommand("maulastmanstanding").setExecutor(this);
-		arena = SerializableLocation.fromString(plugin.getConfig().getString("lms.arena")).toLocation();
-		lobby = SerializableLocation.fromString(plugin.getConfig().getString("lms.lobby")).toLocation();
+		if (plugin.getConfig().contains("lms.arena")) arena = SerializableLocation.fromString(plugin.getConfig().getString("lms.arena")).toLocation();
+		if (plugin.getConfig().contains("lms.lobby")) lobby = SerializableLocation.fromString(plugin.getConfig().getString("lms.lobby")).toLocation();
 		minPlayers = plugin.getConfig().getInt("lms.minplayers", 5);
 	}
 	
