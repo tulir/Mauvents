@@ -19,7 +19,7 @@ import org.bukkit.scoreboard.Team;
 import net.maunium.bukkit.Maussentials.Utils.IngameCommandExecutor;
 import net.maunium.bukkit.Maussentials.Utils.MetadataUtils;
 import net.maunium.bukkit.Maussentials.Utils.SerializableLocation;
-import net.maunium.bukkit.Maussentials.Utils.DelayedActions.DelayedTeleport;
+import net.maunium.bukkit.Maussentials.Utils.DelayedActions.DelayedAction;
 
 public class LTS implements Listener, IngameCommandExecutor {
 	public static final String IN_LTS = "MauventsLTSInEvent";
@@ -151,10 +151,23 @@ public class LTS implements Listener, IngameCommandExecutor {
 	public boolean join(Player p) {
 		if (started || players.contains(p.getUniqueId())) return false;
 		else {
-			players.add(p.getUniqueId());
-			MetadataUtils.setFixedMetadata(p, IN_LTS, true, plugin);
+			new DelayedAction(p, 100, new Runnable() {
+				// Success runnable
+				@Override
+				public void run() {
+					players.add(p.getUniqueId());
+					MetadataUtils.setFixedMetadata(p, IN_LTS, true, plugin);
+					p.teleport(lobby);
+					p.sendMessage(plugin.translateStd("lts.lobby.tped"));
+				}
+			}, new Runnable() {
+				// Fail runnable
+				@Override
+				public void run() {
+					p.sendMessage(plugin.translateErr("lts.lobby.tpfail"));
+				}
+			}, 15, 0).start();;
 			p.sendMessage(plugin.translateStd("lts.lobby.tping"));
-			new DelayedTeleport(p, 100, lobby, plugin.translateStd("lts.lobby.tped"), plugin.translateErr("lts.lobby.tpfail"), 15, 0).start();
 			return true;
 		}
 	}
@@ -187,8 +200,7 @@ public class LTS implements Listener, IngameCommandExecutor {
 	public boolean onCommand(Player sender, Command command, String label, String[] args) {
 		if (args.length == 0) {
 			if (!players.contains(sender.getUniqueId())) {
-				if (join(sender)) sender.sendMessage(plugin.translateStd("lts.join"));
-				else sender.sendMessage(plugin.translateErr("lts.alreadystarted"));
+				if (!join(sender)) sender.sendMessage(plugin.translateErr("lts.alreadystarted"));
 			} else {
 				if (leave(sender, false)) sender.sendMessage(plugin.translateStd("lts.leave"));
 				else sender.sendMessage(plugin.translateErr("lts.notin"));
@@ -196,8 +208,7 @@ public class LTS implements Listener, IngameCommandExecutor {
 		} else {
 			if (args[0].equalsIgnoreCase("join")) {
 				if (!players.contains(sender.getUniqueId())) {
-					if (join(sender)) sender.sendMessage(plugin.translateStd("lts.join"));
-					else sender.sendMessage(plugin.translateErr("lts.alreadystarted"));
+					if (!join(sender)) sender.sendMessage(plugin.translateErr("lts.alreadystarted"));
 				} else sender.sendMessage(plugin.translateErr("lts.alreadyin"));
 			} else if (args[0].equalsIgnoreCase("leave")) {
 				if (players.contains(sender.getUniqueId())) {
