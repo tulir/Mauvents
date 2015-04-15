@@ -31,7 +31,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 		this.plugin.getCommand("maulastmanstanding").setExecutor(this);
 		if (plugin.getConfig().contains("lms.arena")) arena = SerializableLocation.fromString(plugin.getConfig().getString("lms.arena")).toLocation();
 		if (plugin.getConfig().contains("lms.lobby")) lobby = SerializableLocation.fromString(plugin.getConfig().getString("lms.lobby")).toLocation();
-		minPlayers = plugin.getConfig().getInt("lms.minplayers", 5);
+		minPlayers = plugin.getConfig().getInt("lms.minplayers", 3);
 	}
 	
 	public boolean hasStarted() {

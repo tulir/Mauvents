@@ -1,13 +1,17 @@
 package net.maunium.bukkit.Mauvents;
 
+import java.io.IOException;
+
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.maunium.bukkit.Maussentials.Utils.I18n;
 import net.maunium.bukkit.Mauvents.Brackets.Brackets;
 
 public class Mauvents extends JavaPlugin {
-	private final String stag = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "Mauvents" + ChatColor.DARK_GREEN + "] " + ChatColor.GRAY,
-			errtag = ChatColor.DARK_RED + "[" + ChatColor.RED + "Mauvents" + ChatColor.DARK_RED + "] " + ChatColor.RED;
+	private String stag = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "Mauvents" + ChatColor.DARK_GREEN + "] " + ChatColor.GRAY, errtag = ChatColor.DARK_RED
+			+ "[" + ChatColor.RED + "Mauvents" + ChatColor.DARK_RED + "] " + ChatColor.RED;
+	private I18n i18n;
 	private Brackets b;
 	private LMS lms;
 	private LTS lts;
@@ -16,6 +20,16 @@ public class Mauvents extends JavaPlugin {
 	public void onEnable() {
 		long st = System.currentTimeMillis();
 		saveDefaultConfig();
+		saveResource("en_US.lang", true);
+		
+		try {
+			i18n = I18n.createInstance(getDataFolder(), getConfig().getString("language", "en_US"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		stag = i18n.translate("stag");
+		errtag = i18n.translate("errtag");
 		
 		getCommand("mauvents").setExecutor(new CommandMauventsAdmin(this));
 		b = new Brackets(this);
@@ -30,7 +44,7 @@ public class Mauvents extends JavaPlugin {
 	public void onDisable() {
 		long st = System.currentTimeMillis();
 		
-		// TODO: Disable code
+		lts.disable();
 		saveConfig();
 		
 		int et = (int) (System.currentTimeMillis() - st);
@@ -50,17 +64,14 @@ public class Mauvents extends JavaPlugin {
 	}
 	
 	public String translateStd(String node, Object... arguments) {
-		
-		return stag + /* TODO: Translate node */node;
+		return stag + i18n.translate(node, arguments);
 	}
 	
 	public String translateErr(String node, Object... arguments) {
-		
-		return errtag + /* TODO: Translate node */node;
+		return errtag + i18n.translate(node, arguments);
 	}
 	
 	public String translatePlain(String node, Object... arguments) {
-		
-		return /* TODO: Translate node */node;
+		return i18n.translate(node, arguments);
 	}
 }

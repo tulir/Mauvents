@@ -39,22 +39,27 @@ public class LTS implements Listener, IngameCommandExecutor {
 		if (plugin.getConfig().contains("lts.lobby")) lobby = SerializableLocation.fromString(plugin.getConfig().getString("lts.lobby")).toLocation();
 		if (plugin.getConfig().contains("lts.team1")) team1 = SerializableLocation.fromString(plugin.getConfig().getString("lts.team1")).toLocation();
 		if (plugin.getConfig().contains("lts.team2")) team2 = SerializableLocation.fromString(plugin.getConfig().getString("lts.team2")).toLocation();
-		minPlayers = plugin.getConfig().getInt("lts.minplayers", 5);
+		minPlayers = plugin.getConfig().getInt("lts.minplayers", 4);
 		
 		Scoreboard board = sbm.getMainScoreboard();
-		red = board.registerNewTeam("red");
+		red = board.registerNewTeam("mauventsred");
 		red.setAllowFriendlyFire(false);
 		red.setCanSeeFriendlyInvisibles(true);
 		red.setDisplayName(plugin.translatePlain("lts.displayname.red"));
 		red.setPrefix(plugin.translatePlain("lts.prefix.red"));
 		red.setSuffix(plugin.translatePlain("lts.suffix.red"));
 		
-		green = board.registerNewTeam("green");
+		green = board.registerNewTeam("mauventsgreen");
 		green.setAllowFriendlyFire(false);
 		green.setCanSeeFriendlyInvisibles(true);
 		green.setDisplayName(plugin.translatePlain("lts.displayname.green"));
 		green.setPrefix(plugin.translatePlain("lts.prefix.green"));
 		green.setSuffix(plugin.translatePlain("lts.suffix.green"));
+	}
+	
+	public void disable() {
+		red.unregister();
+		green.unregister();
 	}
 	
 	public boolean hasStarted() {
@@ -98,6 +103,7 @@ public class LTS implements Listener, IngameCommandExecutor {
 					red.addPlayer(p);
 				}
 			} else players.remove(u);
+			flipswitch = !flipswitch;
 		}
 		started = true;
 	}
@@ -139,8 +145,6 @@ public class LTS implements Listener, IngameCommandExecutor {
 		}
 		
 		players.clear();
-		red.getPlayers().clear();
-		green.getPlayers().clear();
 		started = false;
 	}
 	
@@ -181,7 +185,27 @@ public class LTS implements Listener, IngameCommandExecutor {
 	
 	@Override
 	public boolean onCommand(Player sender, Command command, String label, String[] args) {
-		// TODO Auto-generated method stub
-		return false;
+		if (args.length == 0) {
+			if (!players.contains(sender.getUniqueId())) {
+				if (join(sender)) sender.sendMessage(plugin.translateStd("lts.join"));
+				else sender.sendMessage(plugin.translateErr("lts.alreadystarted"));
+			} else {
+				if (leave(sender, false)) sender.sendMessage(plugin.translateStd("lts.leave"));
+				else sender.sendMessage(plugin.translateErr("lts.notin"));
+			}
+		} else {
+			if (args[0].equalsIgnoreCase("join")) {
+				if (!players.contains(sender.getUniqueId())) {
+					if (join(sender)) sender.sendMessage(plugin.translateStd("lts.join"));
+					else sender.sendMessage(plugin.translateErr("lts.alreadystarted"));
+				} else sender.sendMessage(plugin.translateErr("lts.alreadyin"));
+			} else if (args[0].equalsIgnoreCase("leave")) {
+				if (players.contains(sender.getUniqueId())) {
+					if (leave(sender, false)) sender.sendMessage(plugin.translateStd("lts.leave"));
+					else sender.sendMessage(plugin.translateErr("lts.notin"));
+				} else sender.sendMessage(plugin.translateErr("lts.notin"));
+			}
+		}
+		return true;
 	}
 }

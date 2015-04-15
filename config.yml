@@ -1,3 +1,4 @@
+language: en_US
 lms:
   min-players: 5
 lts:

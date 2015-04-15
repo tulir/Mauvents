@@ -1,0 +1,27 @@
+stag=&2[&aMauvents&2] &7
+errtag=&4[&cMauvents&4] &c
+
+lts.displayname.green=[LTS] Green
+lts.displayname.red=[LTS] Red
+lts.prefix.red=&4
+lts.prefix.green=&a
+lts.suffix.red=&f
+lts.suffix.green=&f
+lts.win.red=&b[LTS]&3 The &4red&3 team won
+lts.win.red=&b[LTS]&3 The &agreen&3 team won
+lts.win.null=&b[LTS]&3 It's a tie!
+lts.join=&b[LTS]&7 Successfully joined the match.
+lts.leave=&b[LTS]&7 Successfully left the match.
+lts.notin=&b[LTS]&c You aren't in the match!
+lts.alreadyin=&b[LTS]&c You are already in the match!
+lts.alreadystarted=&b[LTS]&c The match has already started!
+lts.lobby.tping=&b[LTS]&7 Teleporting to lobby in 5 seconds... Please don't move.
+lts.lobby.tped=&b[LTS]&7 Successfully teleported to lobby.
+lts.lobby.tpfail=&b[LTS]&c Failed to tp to lobby! Why did you move? 3:<
+lts.toolittleplayers=&b[LTS]&c There are not enough players to start a LTS match!
+lts.notsetup=&b[LTS]&c You haven't set-up the LTS arena.
+lts.started=&b[LTS]&7 Started LTS match
+lts.set.team1=&b[LTS]&7 Set spawn point for team 1 to &6{0}&7.
+lts.set.team2=&b[LTS]&7 Set spawn point for team 2 to &6{0}&7.
+lts.set.lobby=&b[LTS]&7 Set lobby point to &6{0}&7.
+lts.set.notfound=&b[LTS]&c No such spawn point. Available points: team1, team2, lobby.

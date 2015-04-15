@@ -55,15 +55,14 @@ public class CommandMauventsAdmin implements IngameCommandExecutor {
 				} else if (args[1].equalsIgnoreCase("setspawn") && args.length > 2) {
 					if (args[2].equalsIgnoreCase("team1")) {
 						plugin.getLTS().setTeam1(p.getLocation());
-						p.sendMessage(plugin.translateStd("lms.set.team1", new SerializableLocation(p.getLocation()).toReadableString()));
-					}
-					if (args[2].equalsIgnoreCase("team2")) {
+						p.sendMessage(plugin.translateStd("lts.set.team1", new SerializableLocation(p.getLocation()).toReadableString()));
+					} else if (args[2].equalsIgnoreCase("team2")) {
 						plugin.getLTS().setTeam2(p.getLocation());
-						p.sendMessage(plugin.translateStd("lms.set.team2", new SerializableLocation(p.getLocation()).toReadableString()));
+						p.sendMessage(plugin.translateStd("lts.set.team2", new SerializableLocation(p.getLocation()).toReadableString()));
 					} else if (args[2].equalsIgnoreCase("lobby")) {
 						plugin.getLTS().setLobby(p.getLocation());
-						p.sendMessage(plugin.translateStd("lms.set.lobby", new SerializableLocation(p.getLocation()).toReadableString()));
-					} else p.sendMessage(plugin.translateErr("lms.set.notfound", args[2]));
+						p.sendMessage(plugin.translateStd("lts.set.lobby", new SerializableLocation(p.getLocation()).toReadableString()));
+					} else p.sendMessage(plugin.translateErr("lts.set.notfound", args[2]));
 				} else return false;
 				return true;
 			} else return false;
