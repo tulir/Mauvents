@@ -1,19 +1,27 @@
 package net.maunium.bukkit.Mauvents;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
@@ -28,8 +36,8 @@ public class LTS implements Listener, IngameCommandExecutor {
 	private Location lobby = null, team1 = null, team2 = null;
 	private int minPlayers = 6;
 	private Set<UUID> players = new HashSet<UUID>();
+	private ItemStack[] armor, inventory;
 	private boolean respawnGreen = false, respawnRed = false, started = false;
-	private Team red, green;
 	private ScoreboardManager sbm;
 	
 	public LTS(Mauvents plugin) {
@@ -40,27 +48,32 @@ public class LTS implements Listener, IngameCommandExecutor {
 		if (plugin.getConfig().contains("lts.lobby")) lobby = SerializableLocation.fromString(plugin.getConfig().getString("lts.lobby")).toLocation();
 		if (plugin.getConfig().contains("lts.team1")) team1 = SerializableLocation.fromString(plugin.getConfig().getString("lts.team1")).toLocation();
 		if (plugin.getConfig().contains("lts.team2")) team2 = SerializableLocation.fromString(plugin.getConfig().getString("lts.team2")).toLocation();
-		minPlayers = plugin.getConfig().getInt("lts.minplayers", 4);
+		minPlayers = plugin.getConfig().getInt("lts.min-players", 4);
 		
-		Scoreboard board = sbm.getMainScoreboard();
-		red = board.registerNewTeam("mauventsred");
+		armor = new ItemStack[] { new ItemStack(Material.IRON_BOOTS), new ItemStack(Material.IRON_LEGGINGS), new ItemStack(Material.IRON_CHESTPLATE),
+				new ItemStack(Material.IRON_HELMET) };
+		
+		inventory = new ItemStack[36];
+		Arrays.fill(inventory, new ItemStack(Material.MUSHROOM_SOUP));
+		ItemStack is = new ItemStack(Material.DIAMOND_SWORD);
+		is.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+		inventory[0] = is;
+		
+		Team red = sbm.getMainScoreboard().getTeam("red");
+		Team green = sbm.getMainScoreboard().getTeam("green");
+		if (red == null) red = sbm.getMainScoreboard().registerNewTeam("red");
+		if (green == null) green = sbm.getMainScoreboard().registerNewTeam("green");
 		red.setAllowFriendlyFire(false);
 		red.setCanSeeFriendlyInvisibles(true);
-		red.setDisplayName(plugin.translatePlain("lts.displayname.red"));
-		red.setPrefix(plugin.translatePlain("lts.prefix.red"));
-		red.setSuffix(plugin.translatePlain("lts.suffix.red"));
+		red.setDisplayName("Red");
+		red.setPrefix(ChatColor.RED.toString());
+		red.setSuffix(ChatColor.RESET.toString());
 		
-		green = board.registerNewTeam("mauventsgreen");
 		green.setAllowFriendlyFire(false);
 		green.setCanSeeFriendlyInvisibles(true);
-		green.setDisplayName(plugin.translatePlain("lts.displayname.green"));
-		green.setPrefix(plugin.translatePlain("lts.prefix.green"));
-		green.setSuffix(plugin.translatePlain("lts.suffix.green"));
-	}
-	
-	public void disable() {
-		red.unregister();
-		green.unregister();
+		green.setDisplayName("Green");
+		green.setPrefix(ChatColor.GREEN.toString());
+		green.setSuffix(ChatColor.RESET.toString());
 	}
 	
 	public boolean hasStarted() {
@@ -92,16 +105,20 @@ public class LTS implements Listener, IngameCommandExecutor {
 	
 	public void start() {
 		boolean flipswitch = true;
-		
-		for (UUID u : players) {
+		List<UUID> shuffled = new ArrayList<UUID>(players);
+		Collections.shuffle(shuffled);
+		for (UUID u : shuffled) {
 			Player p = plugin.getServer().getPlayer(u);
 			if (p != null && p.isOnline()) {
+				p.setScoreboard(sbm.getMainScoreboard());
+				p.getInventory().setArmorContents(armor);
+				p.getInventory().setContents(inventory);
 				if (flipswitch) {
 					p.teleport(team1);
-					green.addPlayer(p);
+					sbm.getMainScoreboard().getTeam("green").addPlayer(p);
 				} else {
 					p.teleport(team2);
-					red.addPlayer(p);
+					sbm.getMainScoreboard().getTeam("red").addPlayer(p);
 				}
 			} else players.remove(u);
 			flipswitch = !flipswitch;
@@ -110,6 +127,7 @@ public class LTS implements Listener, IngameCommandExecutor {
 	}
 	
 	public void end() {
+		Team red = sbm.getMainScoreboard().getTeam("red"), green = sbm.getMainScoreboard().getTeam("green");
 		if (red.getPlayers().size() != 0 && green.getPlayers().size() != 0) return;
 		else if (red.getPlayers().size() == 0 && green.getPlayers().size() == 0) plugin.getServer().broadcastMessage(plugin.translateStd("lts.win.null"));
 		else if (red.getPlayers().size() == 0) {
@@ -159,6 +177,8 @@ public class LTS implements Listener, IngameCommandExecutor {
 					players.add(p.getUniqueId());
 					MetadataUtils.setFixedMetadata(p, IN_LTS, true, plugin);
 					p.teleport(lobby);
+					p.getInventory().clear();
+					p.getInventory().setArmorContents(new ItemStack[p.getInventory().getArmorContents().length]);
 					p.sendMessage(plugin.translateStd("lts.lobby.tped"));
 				}
 			}, new Runnable() {
@@ -174,9 +194,12 @@ public class LTS implements Listener, IngameCommandExecutor {
 	}
 	
 	public boolean leave(Player p, boolean death) {
+		Team red = sbm.getMainScoreboard().getTeam("red"), green = sbm.getMainScoreboard().getTeam("green");
 		if (!players.contains(p.getUniqueId()) && !p.hasMetadata(IN_LTS)) return false;
 		MetadataUtils.removeMetadata(p, IN_LTS, plugin);
 		players.remove(p.getUniqueId());
+		p.getInventory().clear();
+		p.getInventory().setArmorContents(new ItemStack[p.getInventory().getArmorContents().length]);
 		if (green.hasPlayer(p)) green.removePlayer(p);
 		if (red.hasPlayer(p)) red.removePlayer(p);
 		if (!death) p.teleport(plugin.getServer().getWorlds().get(0).getSpawnLocation());
@@ -197,12 +220,13 @@ public class LTS implements Listener, IngameCommandExecutor {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPreCommand(PlayerCommandPreprocessEvent evt) {
-		if (evt.getPlayer().hasMetadata(IN_LTS)) {
-			if (!evt.getMessage().startsWith("lts") && !evt.getMessage().startsWith("maults") && !evt.getMessage().startsWith("maulastteamstanding")
-					&& !evt.getMessage().startsWith("lastteamstanding")) {
+		if (evt.getPlayer().hasMetadata(IN_LTS) && players.contains(evt.getPlayer())) {
+			if (!evt.getMessage().startsWith("/lts") && !evt.getMessage().startsWith("/maults") && !evt.getMessage().startsWith("/maulastteamstanding")
+					&& !evt.getMessage().startsWith("/lastteamstanding") && !evt.getMessage().startsWith("/mauvents")) {
 				evt.setCancelled(true);
+				evt.setMessage("/thiscommandshallnotdoanythingthatwouldhelptheplayer");
 				evt.getPlayer().sendMessage(plugin.translateErr("lts.commandinmatch"));
 			}
 		}

@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -32,7 +33,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 		this.plugin.getCommand("maulastmanstanding").setExecutor(this);
 		if (plugin.getConfig().contains("lms.arena")) arena = SerializableLocation.fromString(plugin.getConfig().getString("lms.arena")).toLocation();
 		if (plugin.getConfig().contains("lms.lobby")) lobby = SerializableLocation.fromString(plugin.getConfig().getString("lms.lobby")).toLocation();
-		minPlayers = plugin.getConfig().getInt("lms.minplayers", 3);
+		minPlayers = plugin.getConfig().getInt("lms.min-players", 3);
 	}
 	
 	public boolean hasStarted() {
@@ -116,13 +117,13 @@ public class LMS implements Listener, IngameCommandExecutor {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPreCommand(PlayerCommandPreprocessEvent evt) {
 		if (evt.getPlayer().hasMetadata(IN_LMS)) {
-			if (!evt.getMessage().startsWith("lms") && !evt.getMessage().startsWith("maulms") && !evt.getMessage().startsWith("maulastmanstanding")
-					&& !evt.getMessage().startsWith("lastmanstanding")) {
+			if (!evt.getMessage().startsWith("/lms") && !evt.getMessage().startsWith("/maulms") && !evt.getMessage().startsWith("/maulastmanstanding")
+					&& !evt.getMessage().startsWith("/lastmanstanding") && !evt.getMessage().startsWith("/mauvents")) {
 				evt.setCancelled(true);
-				evt.getPlayer().sendMessage(plugin.translateErr("lms.commandinmatch"));
+				evt.getPlayer().sendMessage(plugin.translateErr("lts.commandinmatch"));
 			}
 		}
 	}

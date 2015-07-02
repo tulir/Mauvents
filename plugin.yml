@@ -2,7 +2,7 @@ name: Mauvents
 author: Tulir293
 main: net.maunium.bukkit.Mauvents.Mauvents
 website: http://maunium.net
-version: 0.1
+version: 1.0
 depend: [Maussentials]
 commands:
   mauvents:

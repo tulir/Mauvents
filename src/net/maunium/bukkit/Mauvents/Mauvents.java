@@ -44,7 +44,6 @@ public class Mauvents extends JavaPlugin {
 	public void onDisable() {
 		long st = System.currentTimeMillis();
 		
-		lts.disable();
 		saveConfig();
 		
 		int et = (int) (System.currentTimeMillis() - st);
