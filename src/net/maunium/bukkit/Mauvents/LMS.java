@@ -4,6 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import net.maunium.bukkit.Maussentials.Utils.IngameCommandExecutor;
+import net.maunium.bukkit.Maussentials.Utils.MetadataUtils;
+import net.maunium.bukkit.Maussentials.Utils.SerializableLocation;
+import net.maunium.bukkit.Maussentials.Utils.DelayedActions.DelayedTeleport;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
@@ -18,11 +23,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import net.maunium.bukkit.Maussentials.Utils.IngameCommandExecutor;
-import net.maunium.bukkit.Maussentials.Utils.MetadataUtils;
-import net.maunium.bukkit.Maussentials.Utils.SerializableLocation;
-import net.maunium.bukkit.Maussentials.Utils.DelayedActions.DelayedTeleport;
 
 /**
  * LMS (Last Man Standing) handler
@@ -42,7 +42,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 	private Set<UUID> players = new HashSet<UUID>();
 	// If the game is started or not
 	private boolean started = false;
-	
+
 	public LMS(Mauvents plugin) {
 		this.plugin = plugin;
 		// Register listeners
@@ -54,28 +54,28 @@ public class LMS implements Listener, IngameCommandExecutor {
 		if (plugin.getConfig().contains("lms.lobby")) lobby = SerializableLocation.fromString(plugin.getConfig().getString("lms.lobby")).toLocation();
 		minPlayers = plugin.getConfig().getInt("lms.min-players", 3);
 	}
-	
+
 	/**
 	 * @return True if LMS is in-game.
 	 */
 	public boolean hasStarted() {
 		return started;
 	}
-	
+
 	/**
 	 * @return True if there are enough players to start a game.
 	 */
 	public boolean enoughPlayers() {
 		return players.size() >= minPlayers;
 	}
-	
+
 	/**
 	 * @return True if all the necessary settings are correctly set up.
 	 */
 	public boolean isSetUp() {
 		return arena != null && lobby != null && minPlayers > 1;
 	}
-	
+
 	/**
 	 * Set the arena spawn point to the given location.
 	 */
@@ -83,7 +83,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 		arena = l;
 		plugin.getConfig().set("lms.arena", new SerializableLocation(l).toString());
 	}
-	
+
 	/**
 	 * Set the lobby spawn point to the given location.
 	 * 
@@ -93,7 +93,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 		lobby = l;
 		plugin.getConfig().set("lms.lobby", new SerializableLocation(l).toString());
 	}
-	
+
 	/**
 	 * Start the match
 	 */
@@ -110,7 +110,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 		// Set the started flag
 		started = true;
 	}
-	
+
 	/**
 	 * End the match
 	 */
@@ -139,7 +139,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 		// Set started flag to false
 		started = false;
 	}
-	
+
 	/**
 	 * Join the given player to the match.
 	 */
@@ -159,7 +159,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Make the given player leave the match
 	 * 
@@ -178,21 +178,21 @@ public class LMS implements Listener, IngameCommandExecutor {
 		if (started && players.size() < 2) end();
 		return true;
 	}
-	
+
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent evt) {
 		if (evt.getPlayer().hasMetadata(IN_LMS) || players.contains(evt.getPlayer().getUniqueId())) {
 			leave(evt.getPlayer(), false);
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent evt) {
 		if (evt.getEntity().hasMetadata(IN_LMS) || players.contains(evt.getEntity().getUniqueId())) {
 			leave(evt.getEntity(), true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPreCommand(PlayerCommandPreprocessEvent evt) {
 		if (evt.getPlayer().hasMetadata(IN_LMS)) {
@@ -203,7 +203,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onCommand(Player sender, Command command, String label, String[] args) {
 		if (args.length == 0) {
@@ -229,7 +229,7 @@ public class LMS implements Listener, IngameCommandExecutor {
 		}
 		return true;
 	}
-	
+
 	// e > evt murr
 	@EventHandler
 	public void onRightClick(PlayerInteractEvent e) {
@@ -239,36 +239,54 @@ public class LMS implements Listener, IngameCommandExecutor {
 			Sign s = (Sign) e.getClickedBlock().getState();
 			// get line 1
 			if (s.getLine(0).contains(ChatColor.DARK_BLUE + "[LMS]")) {
-				// no delayed teleport
-				if (join(e.getPlayer(), false)) {
-					if (enoughPlayers()) {
-						// start lms
-						start();
-						// set line 1 to started
+				if (s.getLine(1).contains(ChatColor.RED + "Started")) {
+					// set line 1 actually (2) to joined players.size() >_>
+					if(started) {
 						s.setLine(1, ChatColor.RED + "Started");
-					} else {
-						// set line 1 actually (2) to joined players.size() >_>
-						s.setLine(1, ChatColor.GREEN + "Players: " + players.size());
+						s.setLine(3, ChatColor.DARK_AQUA + "Click to update!");
 					}
-					// update the sign
+					else  {
+						s.setLine(1, ChatColor.GREEN + "Players: " + players.size());
+						s.setLine(3, ChatColor.DARK_AQUA + "Click to join");
+					}
 					s.update();
+				}
+				else {
+					// no delayed teleport
+					if (join(e.getPlayer(), false)) {
+						if (enoughPlayers()) {
+							// start lms
+							start();
+							// set line 1 to started
+							s.setLine(1, ChatColor.RED + "Started");
+							s.setLine(3, ChatColor.DARK_AQUA + "Click to update!");
+							// update the sign
+							s.update();
+						}
+					}
 				}
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCreateSign(SignChangeEvent e) {
 		String[] lines = e.getLines();
 		if (lines.length == 0 || !e.getPlayer().isOp()) { return; }
 		if (lines[0].toLowerCase().contains("[lms]")) {
 			e.setLine(0, ChatColor.DARK_BLUE + "[LMS]");
-			e.setLine(1, ChatColor.GREEN + "Players: 0");
-			e.setLine(3, ChatColor.DARK_AQUA + "Click to join");
+			if (started) {
+				e.setLine(1, ChatColor.RED + "Started");
+				e.setLine(3, ChatColor.DARK_AQUA + "Click to update!");
+			}
+			else {
+				e.setLine(1, ChatColor.GREEN + "Players: 0");
+				e.setLine(3, ChatColor.DARK_AQUA + "Click to join");
+			}
 		}
 	}
-	
+
 	/*
-	 * NOT READY YET!!!!! set location of sign cuz after game the second line needs to be Players: 0
+	 * NOT READY YET!!!!! set location of sign cuz after a game the second line needs to be Players: 0
 	 */
 }
